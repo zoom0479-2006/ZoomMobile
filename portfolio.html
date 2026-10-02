@@ -31,12 +31,13 @@
         .portfolio-categories button:hover, .portfolio-categories button.active { border-color: #ff0000; color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); }
 
         .gallery-container { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto 50px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .gallery-item { position: relative; overflow: hidden; border-radius: 4px; aspect-ratio: 4 / 3; cursor: pointer; background-color: #111; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .gallery-item { position: relative; overflow: hidden; border-radius: 4px; aspect-ratio: 4 / 3; cursor: pointer; background-color: #111; transition: opacity 0.4s ease, transform 0.4s ease; display: block; }
+        .gallery-item.hidden { display: none; opacity: 0; transform: scale(0.9); }
+        .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .gallery-item::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 60px 20px #000000; pointer-events: none; transition: box-shadow 0.4s ease; z-index: 1; }
         .gallery-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s ease; z-index: 2; }
-        .gallery-overlay span { color: #ffffff; font-size: 1.2rem; letter-spacing: 4px; text-transform: uppercase; transform: translateY(20px); transition: transform 0.4s ease; font-weight: bold; }
-        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-overlay span { color: #ffffff; font-size: 1.2rem; letter-spacing: 4px; text-transform: uppercase; transform: translateY(20px); transition: transform 0.4s ease; font-weight: bold; text-align: center; padding: 10px; }
+        .gallery-item:hover img, .gallery-item:hover video { transform: scale(1.1); }
         .gallery-item:hover::after { box-shadow: inset 0 0 0px 0px #000000; }
         .gallery-item:hover .gallery-overlay { opacity: 1; }
         .gallery-item:hover .gallery-overlay span { transform: translateY(0); }
@@ -44,42 +45,17 @@
         /* Mobile Responsiveness */
         @media (max-width: 850px) {
             nav { padding: 15px 0; flex-direction: column; gap: 15px; }
-            .location-container { position: relative; left: auto; top: auto; justify-content: center; }
-            .search-container { position: relative; right: auto; top: auto; justify-content: center; }
             .nav-links { margin-left: 0; width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
             .nav-links a { margin: 0 8px; font-size: 0.9rem; }
-            .search-input { width: 80px; }
-            .search-input:focus { width: 150px; }
             
-            .logo { font-size: 4rem; letter-spacing: 2px; }
-            .logo .o-two { margin-left: -20px; }
-            .subtitle { font-size: 0.8rem; letter-spacing: 3px; text-align: center; padding: 0 10px; }
-            .image-title { font-size: 2rem; letter-spacing: 3px; }
-            .image-title span { font-size: 1rem; margin-top: 10px; }
-            
-            .about-container { flex-direction: column; height: auto; padding-top: 200px; text-align: center; gap: 30px; }
-            .about-text { padding-right: 0; }
-            .about-text h1 { font-size: 2.5rem; margin-bottom: 15px; }
-            .about-image { width: 100%; height: 40vh; margin-bottom: 50px; }
-            
-            .booking-wrapper { margin-top: 200px; gap: 20px; padding-bottom: 50px; }
-            .glass-panel { padding: 25px 15px; box-sizing: border-box; width: 100%; min-width: unset; }
-            .glass-panel h2 { font-size: 1.5rem; text-align: center; }
-            .info-item { flex-direction: column; align-items: center; text-align: center; padding: 15px 10px; }
-            .info-icon { margin-right: 0; margin-bottom: 10px; }
-            
-            .modal-content { max-width: 90%; padding: 25px; box-sizing: border-box; }
-            
-            .page-header { margin-top: 200px; padding: 20px; }
+            .page-header { margin-top: 150px; padding: 20px; }
             .page-header h1 { font-size: 2.2rem; }
             .portfolio-categories { gap: 10px; }
             .portfolio-categories button { padding: 8px 12px; font-size: 0.7rem; }
             .gallery-container { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); padding-bottom: 50px; }
             
             .music-toggle { bottom: 15px; left: 15px; width: 40px; height: 40px; font-size: 1.2rem; }
-            .scroll-indicator { font-size: 0.75rem; bottom: 20px; width: 100%; text-align: center; left: 0; }
         }
-
     </style>
 </head>
 <body>
@@ -103,28 +79,79 @@
         <p>Our recent digital works</p>
     </div>
 
-    <!-- Category Filters -->
+    <!-- Category Filters - Now functional -->
     <div class="portfolio-categories">
-        <button class="active">All</button>
-        <button>Wedding</button>
-        <button>Photos</button>
-        <button>Albums</button>
-        <button>Videos</button>
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="wedding">Wedding</button>
+        <button data-filter="photos">Photos</button>
+        <button data-filter="albums">Albums</button>
+        <button data-filter="videos">Videos</button>
     </div>
 
     <div class="gallery-container">
-        <!-- Currently populated with placeholders; ready for future pictures -->
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=1" alt="Gallery Image"><div class="gallery-overlay"><span>Neon Portraits</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=2" alt="Gallery Image"><div class="gallery-overlay"><span>Cyberpunk</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=3" alt="Gallery Image"><div class="gallery-overlay"><span>Automotive</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=4" alt="Gallery Image"><div class="gallery-overlay"><span>Product Stills</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=5" alt="Gallery Image"><div class="gallery-overlay"><span>Monochrome</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=6" alt="Gallery Image"><div class="gallery-overlay"><span>CGI Renders</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=7" alt="Gallery Image"><div class="gallery-overlay"><span>VFX Plates</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=8" alt="Gallery Image"><div class="gallery-overlay"><span>Virtual Sets</span></div></div>
-        <div class="gallery-item"><img src="https://picsum.photos/600/400?random=9" alt="Gallery Image"><div class="gallery-overlay"><span>Mocap Data</span></div></div>
+        <!-- 
+          TO ADD YOUR OWN IMAGES/VIDEOS:
+          1. Upload your files (e.g., 'my-wedding-pic.jpg') to your GitHub repository in the same folder.
+          2. Change the 'src' link below from 'https://picsum.photos/...' to your file name (e.g., src="my-wedding-pic.jpg")
+          3. Set the correct 'data-category' (wedding, photos, albums, or videos) so the filter buttons work.
+        -->
+        
+        <div class="gallery-item" data-category="wedding">
+            <img src="https://picsum.photos/600/400?random=1" alt="Wedding">
+            <div class="gallery-overlay"><span>Wedding Highlight</span></div>
+        </div>
+        
+        <div class="gallery-item" data-category="photos">
+            <img src="https://picsum.photos/600/400?random=2" alt="Photo">
+            <div class="gallery-overlay"><span>Portrait</span></div>
+        </div>
+        
+        <div class="gallery-item" data-category="albums">
+            <img src="https://picsum.photos/600/400?random=3" alt="Album">
+            <div class="gallery-overlay"><span>Pre-Wedding Album</span></div>
+        </div>
+        
+        <div class="gallery-item" data-category="videos">
+            <img src="https://picsum.photos/600/400?random=4" alt="Video Placeholder">
+            <div class="gallery-overlay"><span>Cinematic Reel</span></div>
+        </div>
+        
+        <div class="gallery-item" data-category="wedding">
+            <img src="https://picsum.photos/600/400?random=5" alt="Wedding">
+            <div class="gallery-overlay"><span>Couple Shoot</span></div>
+        </div>
+        
+        <div class="gallery-item" data-category="photos">
+            <img src="https://picsum.photos/600/400?random=6" alt="Photo">
+            <div class="gallery-overlay"><span>Studio Session</span></div>
+        </div>
     </div>
+    
     <script>
+        // --- PORTFOLIO FILTER LOGIC ---
+        const filterBtns = document.querySelectorAll('.portfolio-categories button');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                const filterValue = btn.getAttribute('data-filter');
+                
+                galleryItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // --- BACKGROUND LOGIC ---
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -150,15 +177,6 @@
                 musicToggleBtn.style.borderColor = '#ff0000';
             }
             isMusicPlaying = !isMusicPlaying;
-        });
-
-        // Simple Active State for Categories
-        const categoryBtns = document.querySelectorAll('.portfolio-categories button');
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
         });
 
         window.addEventListener('click', (e) => {
